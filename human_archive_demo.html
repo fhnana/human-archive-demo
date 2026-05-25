@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Human Archive｜同一轮月亮</title>
+  <style>
+    :root {
+      --bg: #060a10;
+      --surface: rgba(13, 20, 30, 0.86);
+      --surface-2: rgba(18, 27, 39, 0.92);
+      --line: rgba(207, 224, 242, 0.16);
+      --text: #edf4fb;
+      --muted: #9badbf;
+      --cyan: #75d7ff;
+      --green: #9ee6b0;
+      --amber: #f1bf72;
+      --rose: #e983a6;
+      --blue: #8aa8ff;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.36);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 18% 10%, rgba(117, 215, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 82% 14%, rgba(241, 191, 114, 0.12), transparent 24%),
+        linear-gradient(145deg, #05080d 0%, #101a25 48%, #07090d 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        radial-gradient(circle at 12% 22%, rgba(255,255,255,0.6) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 72% 18%, rgba(255,255,255,0.55) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 86% 72%, rgba(255,255,255,0.44) 0 1px, transparent 1.5px);
+      background-size: 56px 56px, 56px 56px, 100% 100%, 100% 100%, 100% 100%;
+      opacity: 0.62;
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      width: min(1280px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 24px 0 36px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 0 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .brand strong {
+      font-size: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    .brand span,
+    .mission-clock {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, var(--surface), rgba(8, 13, 20, 0.92));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .input-panel {
+      min-height: 650px;
+      padding: 22px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 18px;
+    }
+
+    .kicker {
+      margin: 0 0 8px;
+      color: var(--cyan);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 13ch;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 1.02;
+      font-weight: 760;
+    }
+
+    .lead {
+      max-width: 68ch;
+      margin: 14px 0 0;
+      color: #c7d5e5;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .console {
+      display: grid;
+      gap: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 170px;
+      resize: vertical;
+      border: 1px solid rgba(207, 224, 242, 0.18);
+      border-radius: var(--radius);
+      background: rgba(3, 7, 12, 0.58);
+      color: var(--text);
+      padding: 16px;
+      font: inherit;
+      line-height: 1.7;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: rgba(117, 215, 255, 0.58);
+      box-shadow: 0 0 0 3px rgba(117, 215, 255, 0.1);
+    }
+
+    .controls,
+    .sample-row,
+    .metrics-row,
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: var(--radius);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .primary,
+    .secondary,
+    .sample {
+      min-height: 40px;
+      padding: 10px 14px;
+      font-weight: 700;
+    }
+
+    .primary {
+      color: #031018;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+    }
+
+    .secondary,
+    .sample {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+    }
+
+    .secondary.active {
+      color: #15070c;
+      background: linear-gradient(90deg, var(--rose), var(--amber));
+    }
+
+    .sample {
+      color: #c8d8e7;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .flow-step {
+      padding: 12px;
+      min-height: 92px;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .flow-step b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .flow-step span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .right-panel {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      min-height: 650px;
+      overflow: hidden;
+    }
+
+    .moon-view {
+      position: relative;
+      min-height: 220px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 68% 26%, rgba(183, 215, 255, 0.9) 0 2px, transparent 3px),
+        radial-gradient(circle at 72% 29%, rgba(117, 215, 255, 0.28), transparent 8%),
+        linear-gradient(180deg, rgba(8, 15, 24, 0.1), rgba(6, 9, 14, 0.82));
+    }
+
+    .moon-horizon {
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: -58px;
+      height: 150px;
+      border-radius: 50% 50% 0 0;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(255,255,255,0.18) 0 3px, transparent 4px),
+        radial-gradient(circle at 58% 34%, rgba(255,255,255,0.12) 0 5px, transparent 6px),
+        linear-gradient(180deg, #777f87, #2b3138 58%, #10151c);
+      opacity: 0.92;
+    }
+
+    .helmet-ring {
+      position: absolute;
+      inset: 24px;
+      border: 1px solid rgba(117, 215, 255, 0.22);
+      border-radius: 50%;
+      box-shadow: inset 0 0 40px rgba(117, 215, 255, 0.08);
+    }
+
+    .hud-label {
+      position: absolute;
+      left: 18px;
+      top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      letter-spacing: 0.08em;
+    }
+
+    .bio-panel {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .bio-head,
+    .result-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    h2,
+    h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .state {
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: #061018;
+      background: var(--amber);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .metric {
+      flex: 1 1 150px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .metric label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 9px;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .fill {
+      width: 34%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      transition: width 500ms ease, background 500ms ease;
+    }
+
+    .result-area {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .diagnosis {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .diagnosis-box,
+    .figure-card,
+    .advice {
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.045);
+      padding: 14px;
+    }
+
+    .diagnosis-box p,
+    .figure-card p,
+    .advice p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 13px;
+    }
+
+    .tag {
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(117, 215, 255, 0.2);
+      background: rgba(117, 215, 255, 0.08);
+      color: #dff7ff;
+      font-size: 12px;
+    }
+
+    .figure-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .figure-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .rank {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #071018;
+      background: var(--cyan);
+      font-weight: 900;
+    }
+
+    .score {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .quote {
+      margin-top: 9px;
+      color: #dce9f6;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .advice {
+      border-color: rgba(158, 230, 176, 0.18);
+      background: rgba(158, 230, 176, 0.07);
+    }
+
+    .empty {
+      color: var(--muted);
+      line-height: 1.8;
+      border: 1px dashed rgba(255,255,255,0.16);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    @media (max-width: 980px) {
+      .grid,
+      .diagnosis {
+        grid-template-columns: 1fr;
+      }
+
+      .input-panel,
+      .right-panel {
+        min-height: auto;
+      }
+
+      .flow {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .shell {
+        width: min(100vw - 20px, 1280px);
+        padding-top: 14px;
+      }
+
+      header,
+      .brand,
+      .bio-head,
+      .result-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .flow,
+      .figure-card {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        max-width: 10ch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <strong>Human Archive</strong>
+        <span>月球困境 × 人类历史经验系统</span>
+      </div>
+      <div class="mission-clock">LUNAR NIGHT 12 · EARTH DELAY 4.3s</div>
+    </header>
+
+    <main class="grid">
+      <section class="panel input-panel">
+        <div>
+          <p class="kicker">Interactive Emotional Resonance Demo</p>
+          <h1>当地球无法立刻回应，向人类历史提问。</h1>
+          <p class="lead">输入或朗读一段当前心理困境。系统会把语言线索转译为模拟生物参数与情绪向量，再匹配几位处境相似的历史人物，生成可执行的月球疗愈建议。</p>
+        </div>
+
+        <div class="console">
+          <textarea id="distressInput" placeholder="例如：我已经在月球基地待了很久，每天都是重复维修和等待。我睡不好，和地球通信总是延迟，突然觉得自己像一个可以被替换的零件。"></textarea>
+          <div class="controls">
+            <button class="primary" id="analyzeBtn">启动 Human Archive</button>
+            <button class="secondary" id="voiceBtn">开始语音输入</button>
+            <button class="secondary" id="clearBtn">清空</button>
+          </div>
+          <div class="sample-row">
+            <button class="sample" data-sample="我在封闭基地里待了很久，睡眠越来越差，任务每天重复。我不是害怕辛苦，而是害怕自己逐渐失去意义。">价值感下降</button>
+            <button class="sample" data-sample="地球消息总是延迟，我看着窗外的黑暗和远处很小的蓝点，突然觉得没有人真正听见我。">远离故土</button>
+            <button class="sample" data-sample="一个小故障反复修不好，我开始心跳很快，呼吸变乱。我知道概率很低，但总觉得下一秒会出事。">焦虑警觉</button>
+            <button class="sample" data-sample="我越来越不想和队友说话，只想一个人待着。可是越沉默，越觉得自己和所有人都断开了。">社交退缩</button>
+          </div>
+        </div>
+
+        <div class="flow">
+          <div class="flow-step"><b>01 信号采集</b><span>语音、文字日志、睡眠、心率变异、交流频率。</span></div>
+          <div class="flow-step"><b>02 困境识别</b><span>孤独、失序、思乡、价值感下降、长期警觉。</span></div>
+          <div class="flow-step"><b>03 历史检索</b><span>寻找相似处境，而不是给用户贴人物标签。</span></div>
+          <div class="flow-step"><b>04 行动转译</b><span>把文化经验转化成当下能完成的小动作。</span></div>
+        </div>
+
+        <p class="lead">演示逻辑：这里的生物参数是根据输入文本模拟生成，用来表现产品原型的底层机制。真实系统可接入穿戴设备、舱内任务日志和语音情绪识别。</p>
+      </section>
+
+      <section class="panel right-panel">
+        <div class="moon-view">
+          <div class="hud-label">HELMET HUD<br>OXYGEN LOOP SENSOR<br>HUMAN ARCHIVE STANDBY</div>
+          <div class="helmet-ring"></div>
+          <div class="moon-horizon"></div>
+        </div>
+
+        <div class="bio-panel">
+          <div class="bio-head">
+            <h2>生物参数模拟</h2>
+            <span class="state" id="systemState">待机</span>
+          </div>
+          <div class="metrics-row">
+            <div class="metric">
+              <label><span>心率变异异常</span><b id="hrvText">34%</b></label>
+              <div class="bar"><div class="fill" id="hrvFill"></div></div>
+            </div>
+            <div class="metric">
+              <label><span>睡眠紊乱</span><b id="sleepText">28%</b></label>
+              <div class="bar"><div class="fill" id="sleepFill"></div></div>
+            </div>
+            <div class="metric">
+              <label><span>社交退缩</span><b id="socialText">31%</b></label>
+              <div class="bar"><div class="fill" id="socialFill"></div></div>
+            </div>
+            <div class="metric">
+              <label><span>意义感波动</span><b id="meaningText">37%</b></label>
+              <div class="bar"><div class="fill" id="meaningFill"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-area" id="resultArea">
+          <div class="empty">等待输入。系统将从困境描述中识别处境类型，并调取与之共鸣的历史经验。</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const input = document.getElementById("distressInput");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const voiceBtn = document.getElementById("voiceBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const resultArea = document.getElementById("resultArea");
+    const systemState = document.getElementById("systemState");
+
+    const metricEls = {
+      hrv: [document.getElementById("hrvFill"), document.getElementById("hrvText")],
+      sleep: [document.getElementById("sleepFill"), document.getElementById("sleepText")],
+      social: [document.getElementById("socialFill"), document.getElementById("socialText")],
+      meaning: [document.getElementById("meaningFill"), document.getElementById("meaningText")]
+    };
+
+    const figures = [
+      {
+        name: "苏轼",
+        title: "流放中的月夜重建",
+        tags: ["渺小感", "价值重建", "长夜秩序"],
+        weights: { loneliness: 2, meaning: 4, anxiety: 1, homesick: 2, fatigue: 2 },
+        echo: "他不是把远方变成胜利，而是在被放逐的地方重新发现生活的尺度。",
+        advice: "将长夜切成可以完成的一小段：写下一个 10 分钟内能完成的动作，并立刻执行。"
+      },
+      {
+        name: "岑参",
+        title: "绝域中的报平安",
+        tags: ["远离故土", "连接感", "边塞孤独"],
+        weights: { loneliness: 3, meaning: 1, anxiety: 1, homesick: 4, fatigue: 1 },
+        echo: "他身处极远之地，却用一句报平安确认自己仍与故乡相连。",
+        advice: "发送一条极短消息给地球或队友：不解释全部痛苦，只确认“我还在”。"
+      },
+      {
+        name: "李白",
+        title: "把孤独转化为宇宙对话",
+        tags: ["孤独", "自由感", "观看能力"],
+        weights: { loneliness: 4, meaning: 2, anxiety: 0, homesick: 1, fatigue: 1 },
+        echo: "无人对饮时，他让月亮和影子进入自己的精神现场。",
+        advice: "做一次 90 秒舷窗观察记录：命名你看见的三个细节，把孤独变成观看。"
+      },
+      {
+        name: "白居易",
+        title: "心安即是归处",
+        tags: ["适应远方", "生活锚点", "情绪稳定"],
+        weights: { loneliness: 2, meaning: 2, anxiety: 2, homesick: 3, fatigue: 3 },
+        echo: "他不否认思乡，但会在不可改变的远方建立可持续的日常。",
+        advice: "建立一个月夜锚点：固定运动、记录、交流三件事的顺序。"
+      },
+      {
+        name: "司马迁",
+        title: "在受挫后保留叙事权",
+        tags: ["挫折", "自我价值", "继续书写"],
+        weights: { loneliness: 1, meaning: 4, anxiety: 1, homesick: 0, fatigue: 2 },
+        echo: "当外部评价压过个人尊严时，他把痛苦转化为一种更长的叙事。",
+        advice: "给今天的失败命名，不写结论，只写：发生了什么、我还能控制什么。"
+      }
+    ];
+
+    const lexicon = {
+      loneliness: ["孤独", "没人", "没有人", "听见", "断开", "一个人", "沉默", "远离"],
+      meaning: ["意义", "价值", "零件", "替换", "没用", "失败", "做不了", "空"],
+      anxiety: ["害怕", "焦虑", "心跳", "呼吸", "出事", "警觉", "危险", "故障"],
+      homesick: ["地球", "故乡", "想家", "家", "延迟", "蓝点", "回去", "亲人"],
+      fatigue: ["睡", "疲劳", "重复", "麻木", "无聊", "长夜", "醒", "累"]
+    };
+
+    function scoreText(text) {
+      const cleanText = text.trim();
+      const base = {
+        loneliness: 1,
+        meaning: 1,
+        anxiety: 1,
+        homesick: 1,
+        fatigue: 1
+      };
+
+      Object.entries(lexicon).forEach(([key, words]) => {
+        words.forEach((word) => {
+          if (cleanText.includes(word)) base[key] += 1;
+        });
+      });
+
+      if (cleanText.length > 70) base.fatigue += 1;
+      if (cleanText.includes("不想") || cleanText.includes("越来越")) base.loneliness += 1;
+      if (cleanText.includes("修不好") || cleanText.includes("失败")) base.anxiety += 1;
+      return base;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function buildMetrics(vector) {
+      return {
+        hrv: clamp(28 + vector.anxiety * 13 + vector.loneliness * 4, 18, 96),
+        sleep: clamp(24 + vector.fatigue * 12 + vector.anxiety * 5, 16, 94),
+        social: clamp(26 + vector.loneliness * 13 + vector.homesick * 4, 18, 95),
+        meaning: clamp(25 + vector.meaning * 14 + vector.fatigue * 4, 18, 98)
+      };
+    }
+
+    function updateMetrics(metrics) {
+      Object.entries(metrics).forEach(([key, value]) => {
+        const [fill, text] = metricEls[key];
+        fill.style.width = `${value}%`;
+        fill.style.background = value > 72
+          ? "linear-gradient(90deg, var(--amber), var(--rose))"
+          : "linear-gradient(90deg, var(--cyan), var(--green))";
+        text.textContent = `${value}%`;
+      });
+    }
+
+    function matchFigures(vector) {
+      return figures
+        .map((figure) => {
+          const score = Object.entries(figure.weights).reduce((sum, [key, weight]) => sum + vector[key] * weight, 0);
+          return { ...figure, score };
+        })
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3);
+    }
+
+    function dominantTags(vector) {
+      const labels = {
+        loneliness: "孤独感上升",
+        meaning: "价值感下降",
+        anxiety: "高警觉焦虑",
+        homesick: "远离故土",
+        fatigue: "时间与睡眠失序"
+      };
+      return Object.entries(vector)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([key]) => labels[key]);
+    }
+
+    function renderResult(text, vector, matches, metrics) {
+      const tags = dominantTags(vector);
+      const top = matches[0];
+      resultArea.innerHTML = `
+        <div class="result-head">
+          <h2>Human Archive 已启动</h2>
+          <span class="state">匹配完成</span>
+        </div>
+        <div class="diagnosis">
+          <div class="diagnosis-box">
+            <h3>困境识别</h3>
+            <div class="tags">${tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
+            <p>系统把输入内容理解为一种处境，而不是一次性格测评。用户不是“像某个古人”，而是在此刻与某种历史经验产生共鸣。</p>
+          </div>
+          <div class="diagnosis-box">
+            <h3>参数解释</h3>
+            <p>心率变异异常 ${metrics.hrv}%、睡眠紊乱 ${metrics.sleep}%、社交退缩 ${metrics.social}%、意义感波动 ${metrics.meaning}%。这些数值用于演示从语言困境到生理风险的转译。</p>
+          </div>
+        </div>
+        <div class="figure-list">
+          ${matches.map((figure, index) => `
+            <article class="figure-card">
+              <div class="rank">${index + 1}</div>
+              <div>
+                <h3>${figure.name}｜${figure.title}</h3>
+                <div class="tags">${figure.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
+                <p>${figure.echo}</p>
+                <div class="quote">${figure.advice}</div>
+              </div>
+              <div class="score">${Math.min(96, 58 + figure.score * 2)}%</div>
+            </article>
+          `).join("")}
+        </div>
+        <div class="advice">
+          <h3>系统转译</h3>
+          <p>当前最适合调用 ${top.name} 的经验接口。不是让用户背诵古诗，而是把历史人物在相似精神处境中的应对方式，转译成月球基地里可以马上执行的一步。</p>
+        </div>
+      `;
+    }
+
+    function analyze() {
+      const text = input.value.trim();
+      if (!text) {
+        input.focus();
+        systemState.textContent = "等待输入";
+        return;
+      }
+
+      systemState.textContent = "扫描中";
+      resultArea.innerHTML = `<div class="empty">正在解析语义线索、模拟生物参数、检索人类历史相似经验……</div>`;
+
+      const vector = scoreText(text);
+      const metrics = buildMetrics(vector);
+      updateMetrics(metrics);
+
+      setTimeout(() => {
+        const matches = matchFigures(vector);
+        systemState.textContent = "共鸣匹配";
+        renderResult(text, vector, matches, metrics);
+      }, 560);
+    }
+
+    document.querySelectorAll("[data-sample]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        input.value = btn.dataset.sample;
+        analyze();
+      });
+    });
+
+    analyzeBtn.addEventListener("click", analyze);
+
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      systemState.textContent = "待机";
+      updateMetrics({ hrv: 34, sleep: 28, social: 31, meaning: 37 });
+      resultArea.innerHTML = `<div class="empty">等待输入。系统将从困境描述中识别处境类型，并调取与之共鸣的历史经验。</div>`;
+    });
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let listening = false;
+
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.lang = "zh-CN";
+      recognition.interimResults = true;
+      recognition.continuous = true;
+
+      recognition.onresult = (event) => {
+        let transcript = "";
+        for (let i = event.resultIndex; i < event.results.length; i += 1) {
+          transcript += event.results[i][0].transcript;
+        }
+        input.value = `${input.value.replace(/\s*$/, "")}${transcript}`;
+      };
+
+      recognition.onend = () => {
+        listening = false;
+        voiceBtn.classList.remove("active");
+        voiceBtn.textContent = "开始语音输入";
+      };
+    } else {
+      voiceBtn.textContent = "浏览器不支持语音";
+      voiceBtn.disabled = true;
+    }
+
+    voiceBtn.addEventListener("click", () => {
+      if (!recognition) return;
+      if (listening) {
+        recognition.stop();
+        return;
+      }
+      listening = true;
+      voiceBtn.classList.add("active");
+      voiceBtn.textContent = "停止语音输入";
+      recognition.start();
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        analyze();
+      }
+    });
+
+    updateMetrics({ hrv: 34, sleep: 28, social: 31, meaning: 37 });
+  </script>
+</body>
+</html>
