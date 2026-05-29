@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Human Archive｜同一轮月亮 · 静谧光晕</title>
+  <title>月球五问｜Human Archive · 同一轮月亮</title>
   <style>
-    /* ========= 全局样式 - 确保背景覆盖全屏 ========= */
+    /* ========= 全局样式 - 深空静谧 ========= */
     * {
       margin: 0;
       padding: 0;
@@ -46,7 +46,7 @@
       overflow-x: hidden;
     }
 
-    /* 精细噪点纹理层 - 保持原风格但不影响覆盖 */
+    /* 精细噪点纹理 */
     body::before {
       content: "";
       position: fixed;
@@ -63,7 +63,7 @@
       z-index: 0;
     }
 
-    /* 开场动画遮罩层 - 更纯净的深空感 */
+    /* 开场动画层 */
     #introCanvas {
       position: fixed;
       top: 0;
@@ -76,7 +76,7 @@
       background: radial-gradient(circle at 50% 50%, #03060a, #010101);
     }
 
-    /* 主内容容器 - 保证背景可见且全屏覆盖 */
+    /* 主内容容器 */
     .main-content {
       position: relative;
       z-index: 2;
@@ -144,9 +144,9 @@
     .input-panel {
       min-height: 650px;
       padding: 22px;
-      display: grid;
-      grid-template-rows: auto auto 1fr auto;
-      gap: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
     .kicker {
@@ -174,83 +174,111 @@
       line-height: 1.8;
     }
 
-    .console { display: grid; gap: 12px; }
-    textarea {
-      width: 100%;
-      min-height: 170px;
-      resize: vertical;
-      border: 1px solid rgba(207, 224, 242, 0.18);
-      border-radius: var(--radius);
-      background: rgba(3, 7, 12, 0.68);
-      color: var(--text);
-      padding: 16px;
-      font: inherit;
-      line-height: 1.7;
-      outline: none;
-    }
-    textarea:focus {
-      border-color: rgba(117, 215, 255, 0.58);
-      box-shadow: 0 0 0 3px rgba(117, 215, 255, 0.1);
+    /* 单选题样式 */
+    .quiz-container {
+      margin-top: 8px;
     }
 
-    .controls, .sample-row, .metrics-row, .tags {
+    .question-text {
+      font-size: 18px;
+      font-weight: 600;
+      padding: 16px 0 12px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 20px;
+      color: var(--cyan);
+      letter-spacing: -0.2px;
+    }
+
+    .options-list {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
     }
 
-    button {
-      border: 0;
+    .option-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(207, 224, 242, 0.12);
       border-radius: var(--radius);
-      font: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .option-item:hover {
+      background: rgba(117, 215, 255, 0.08);
+      border-color: rgba(117, 215, 255, 0.35);
+    }
+
+    .option-prefix {
+      font-weight: 800;
+      color: var(--amber);
+      background: rgba(241, 191, 114, 0.15);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 40px;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .option-text {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #e1ecf5;
+    }
+
+    .option-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      display: block;
+    }
+
+    .quiz-submit {
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      border: none;
+      color: #031018;
+      font-weight: 700;
+      padding: 12px 0;
+      width: 100%;
+      border-radius: var(--radius);
+      font-size: 16px;
       cursor: pointer;
       transition: 0.2s;
+      margin-top: 8px;
     }
 
-    .primary, .secondary, .sample {
-      min-height: 40px;
-      padding: 10px 14px;
-      font-weight: 700;
+    .quiz-submit:hover {
+      opacity: 0.9;
+      transform: scale(0.99);
     }
 
-    .primary {
-      color: #031018;
-      background: linear-gradient(90deg, var(--cyan), var(--green));
-    }
-
-    .secondary, .sample {
+    .refresh-quiz {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.11);
       color: var(--text);
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.11);
+      padding: 8px 14px;
+      border-radius: 40px;
+      font-size: 12px;
+      margin-top: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      width: fit-content;
     }
 
-    .secondary.active {
-      color: #15070c;
-      background: linear-gradient(90deg, var(--rose), var(--amber));
+    .refresh-quiz:hover {
+      background: rgba(117, 215, 255, 0.15);
     }
-
-    .sample { color: #c8d8e7; font-size: 13px; font-weight: 600; }
-
-    .flow {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-
-    .flow-step {
-      padding: 12px;
-      min-height: 92px;
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,0.04);
-    }
-
-    .flow-step b { display: block; margin-bottom: 6px; color: var(--text); font-size: 13px; }
-    .flow-step span { color: var(--muted); font-size: 12px; line-height: 1.55; }
 
     .right-panel {
-      display: grid;
-      grid-template-rows: auto auto 1fr;
+      display: flex;
+      flex-direction: column;
       min-height: 650px;
       overflow: hidden;
     }
@@ -320,246 +348,352 @@
       font-weight: 800;
     }
 
-    .metric {
-      flex: 1 1 150px;
-      padding: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,0.04);
-    }
-
-    .metric label {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 9px;
-    }
-
-    .bar {
-      height: 8px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: rgba(255,255,255,0.08);
-    }
-
-    .fill {
-      width: 34%;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--cyan), var(--green));
-      transition: width 500ms ease, background 500ms ease;
-    }
-
     .result-area {
       padding: 16px;
-      display: grid;
+      display: flex;
+      flex-direction: column;
       gap: 14px;
       align-content: start;
+      flex: 1;
     }
 
-    .diagnosis {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .diagnosis-box, .figure-card, .advice {
+    .persona-card {
       border: 1px solid rgba(255,255,255,0.09);
       border-radius: var(--radius);
       background: rgba(255,255,255,0.045);
-      padding: 14px;
+      padding: 18px;
+      margin-bottom: 10px;
     }
 
-    .diagnosis-box p, .figure-card p, .advice p {
-      margin: 8px 0 0;
-      color: var(--muted);
-      line-height: 1.7;
-      font-size: 13px;
-    }
-
-    .tag {
-      padding: 6px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(117, 215, 255, 0.2);
-      background: rgba(117, 215, 255, 0.08);
-      color: #dff7ff;
-      font-size: 12px;
-    }
-
-    .figure-list { display: grid; gap: 10px; }
-    .figure-card {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 12px;
-      align-items: start;
-    }
-
-    .rank {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      color: #071018;
-      background: var(--cyan);
-      font-weight: 900;
-    }
-
-    .score {
-      color: var(--green);
-      font-size: 13px;
+    .persona-name {
+      font-size: 24px;
       font-weight: 800;
-      white-space: nowrap;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 6px;
     }
 
-    .quote { margin-top: 9px; color: #dce9f6; font-size: 14px; line-height: 1.65; }
-    .advice { border-color: rgba(158, 230, 176, 0.18); background: rgba(158, 230, 176, 0.07); }
+    .persona-sub {
+      font-size: 13px;
+      color: var(--amber);
+      margin-bottom: 14px;
+    }
+
+    .persona-desc {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #d4e2f0;
+      margin: 12px 0;
+    }
+
+    .quote-line {
+      border-left: 3px solid var(--cyan);
+      padding-left: 14px;
+      font-style: italic;
+      color: var(--muted);
+      margin: 12px 0;
+      font-size: 13px;
+    }
+
     .empty {
       color: var(--muted);
       line-height: 1.8;
       border: 1px dashed rgba(255,255,255,0.16);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 20px;
+      text-align: center;
     }
 
     @media (max-width: 980px) {
-      .grid, .diagnosis { grid-template-columns: 1fr; }
-      .flow { grid-template-columns: 1fr 1fr; }
+      .grid { grid-template-columns: 1fr; }
       .input-panel, .right-panel { min-height: auto; }
     }
     @media (max-width: 620px) {
       .shell { width: min(100vw - 20px, 1280px); padding-top: 14px; }
-      header, .brand, .bio-head, .result-head { flex-direction: column; align-items: flex-start; }
-      .flow, .figure-card { grid-template-columns: 1fr; }
       h1 { max-width: 10ch; }
     }
   </style>
 </head>
 <body>
 
-  <!-- 开场动画 Canvas (减少白色噪点，更柔和) -->
   <canvas id="introCanvas"></canvas>
 
-  <!-- Human Archive 主内容 -->
   <div class="main-content" id="mainContent">
     <div class="shell">
       <header>
         <div class="brand">
           <strong>Human Archive</strong>
-          <span>月球困境 × 人类历史经验系统</span>
+          <span>月球五问 · 孤独回声系统</span>
         </div>
-        <div class="mission-clock">LUNAR NIGHT 12 · EARTH DELAY 4.3s</div>
+        <div class="mission-clock">LUNAR CORE · 随机命题</div>
       </header>
 
       <main class="grid">
+        <!-- 左侧：单选题区域 -->
         <section class="panel input-panel">
           <div>
-            <p class="kicker">Interactive Emotional Resonance Demo</p>
-            <h1>当地球无法立刻回应，向人类历史提问。</h1>
-            <p class="lead">输入或朗读一段当前心理困境。系统会先生成 ECHO 值，解释它对这段话的情绪理解，再匹配处境相近的历史人物。</p>
+            <p class="kicker">MOON QUINTET · 随机一题</p>
+            <h1>假如你站在寂静的环形山边缘，你会如何应答？</h1>
+            <p class="lead">每次进入，系统会从五道月球困境中随机抽取一道。选择你的答案，Human Archive 将为你揭示与你精神共鸣的历史灵魂。</p>
           </div>
-
-          <div class="console">
-            <textarea id="distressInput" placeholder="例如：我已经在月球基地待了很久，每天都是重复维修和等待。我睡不好，和地球通信总是延迟，突然觉得自己像一个可以被替换的零件。"></textarea>
-            <div class="controls">
-              <button class="primary" id="analyzeBtn">生成 ECHO 分析</button>
-              <button class="secondary" id="voiceBtn">开始语音输入</button>
-              <button class="secondary" id="clearBtn">清空</button>
-            </div>
-            <div class="sample-row">
-              <button class="sample" data-sample="我在封闭基地里待了很久，睡眠越来越差，任务每天重复。我不是害怕辛苦，而是害怕自己逐渐失去意义。">价值感下降</button>
-              <button class="sample" data-sample="地球消息总是延迟，我看着窗外的黑暗和远处很小的蓝点，突然觉得没有人真正听见我。">远离故土</button>
-              <button class="sample" data-sample="一个小故障反复修不好，我开始心跳很快，呼吸变乱。">焦虑警觉</button>
-              <button class="sample" data-sample="我越来越不想和队友说话，只想一个人待着。">社交退缩</button>
-            </div>
+          <div class="quiz-container" id="quizContainer">
+            <!-- 动态渲染题目和选项 -->
           </div>
-
-          <div class="flow">
-            <div class="flow-step"><b>01 输入</b><span>用户用文字或语音说出此刻的心理处境。</span></div>
-            <div class="flow-step"><b>02 ECHO 分析</b><span>系统提取关键词、处境线索和情绪回声强度。</span></div>
-            <div class="flow-step"><b>03 情绪百分比</b><span>把这段话理解为开心、难过、焦虑、思念等比例。</span></div>
-            <div class="flow-step"><b>04 历史共鸣</b><span>匹配历史人物、相似经历与相关作品。</span></div>
+          <div class="flow" style="margin-top: 8px;">
+            <div class="flow-step"><b>01 随机抽题</b><span>每次进入/刷新获得一道新命题</span></div>
+            <div class="flow-step"><b>02 选择答案</b><span>从五个选项中找到最贴合你内心的回应</span></div>
+            <div class="flow-step"><b>03 生成共鸣</b><span>匹配古人灵魂 — 李白/苏轼/李清照/岑参/文天祥</span></div>
+            <div class="flow-step"><b>04 人格解析</b><span>深度心理特征与月球生存状态</span></div>
           </div>
         </section>
 
+        <!-- 右侧：人物匹配结果 -->
         <section class="panel right-panel">
           <div class="moon-view">
-            <div class="hud-label">ECHO HUD<br>EMOTION SIGNAL<br>HUMAN ARCHIVE STANDBY</div>
+            <div class="hud-label">HUMAN ARCHIVE<br>ECHO · 灵魂镜像<br>月球人格匹配</div>
             <div class="helmet-ring"></div>
             <div class="moon-horizon"></div>
           </div>
-
           <div class="bio-panel">
             <div class="bio-head">
-              <h2>ECHO 值分析</h2>
-              <span class="state" id="systemState">待机</span>
-            </div>
-            <div class="metrics-row">
-              <div class="metric"><label><span>情绪回声强度</span><b id="echoText">34%</b></label><div class="bar"><div class="fill" id="echoFill"></div></div></div>
-              <div class="metric"><label><span>处境相似度</span><b id="resonanceText">28%</b></label><div class="bar"><div class="fill" id="resonanceFill"></div></div></div>
-              <div class="metric"><label><span>文化检索置信</span><b id="archiveText">31%</b></label><div class="bar"><div class="fill" id="archiveFill"></div></div></div>
-              <div class="metric"><label><span>表达清晰度</span><b id="clarityText">37%</b></label><div class="bar"><div class="fill" id="clarityFill"></div></div></div>
+              <h2>🌕 历史回响 · 人物共鸣</h2>
+              <span class="state" id="systemState">待机抽取</span>
             </div>
           </div>
-
           <div class="result-area" id="resultArea">
-            <div class="empty">等待输入。系统将先生成 ECHO 值，再展示情绪理解百分比，并调取与这段话产生共鸣的历史人物与作品。</div>
+            <div class="empty">✨ 请从左侧选择一道题的答案，点击「提交选择」✨<br>系统将生成与你心境最贴近的月球人格。</div>
           </div>
         </section>
       </main>
     </div>
   </div>
-  <script src="archive-data.js"></script>
-  <script>
 
-    // ========== 1. 光晕粒子开场动画 (减少白色噪点，柔化粒子数量) ==========
-    (function() {
+  <script>
+    // ---------- 题库 (五道完整题目) ----------
+    const QUESTIONS = [
+      {
+        id: 1,
+        text: "假如你一个人在月球基地，每个月只能通讯一次，你会对那个遥远的蓝色星球上的人们说什么？",
+        options: [
+          { code: "A", text: "“又是修好所有零件的一天，我这双手还挺值钱。”", type: "李白", sub: "幽默 / 自嘲" },
+          { code: "B", text: "“你们那边现在是什么季节？”", type: "苏轼", sub: "连接感 / 好奇" },
+          { code: "C", text: "“今天的月亮很好看，想你了。”", type: "李清照", sub: "思念 / 情绪寄托" },
+          { code: "D", text: "“这里风沙一样的灰又进设备里了，但还能撑。”", type: "岑参", sub: "边塞感 / 生存状态" },
+          { code: "E", text: "“我还在，一切正常。”", type: "文天祥", sub: "克制 / 坚守" }
+        ]
+      },
+      {
+        id: 2,
+        text: "每天都是同样的检修、同样的舱内路线、同样的饮食，你会用什么方式让今天和昨天不太一样？",
+        options: [
+          { code: "A", text: "故意把今天过得“稍微有意思一点”。", type: "李白", sub: "浪漫化生存" },
+          { code: "B", text: "开始观察那些以前从没注意过的小细节。", type: "苏轼", sub: "观察 / 感受世界" },
+          { code: "C", text: "偷偷留一点时间，听旧录音，看旧照片。", type: "李清照", sub: "情绪锚点" },
+          { code: "D", text: "接受重复本身就是任务的一部分。", type: "岑参", sub: "适应极端环境" },
+          { code: "E", text: "给自己定一个不能被打断的小习惯。", type: "文天祥", sub: "秩序 / 稳定" }
+        ]
+      },
+      {
+        id: 3,
+        text: "一次舱外任务中，一个很小但关键的设备突然失灵，地球的指令要等很久。你会先做什么？",
+        options: [
+          { code: "A", text: "嘴上吐槽两句，但手已经开始修了。", type: "李白", sub: "幽默应对压力" },
+          { code: "B", text: "停下来想：“问题真正出在哪里？”", type: "苏轼", sub: "思考 / 判断" },
+          { code: "C", text: "先让自己冷静下来，不让情绪继续往下掉。", type: "李清照", sub: "情绪稳定" },
+          { code: "D", text: "按记忆里的流程，先做最稳妥的排障。", type: "岑参", sub: "行动优先" },
+          { code: "E", text: "先确认什么是自己绝对不能放弃的。", type: "文天祥", sub: "底线 / 信念" }
+        ]
+      },
+      {
+        id: 4,
+        text: "你在月球基地值夜班。舷窗外是永远安静的灰白地表，地球像一颗遥远的小灯。你突然很强烈地意识到：“人类其实离故乡非常远。”这时你会怎么做？",
+        options: [
+          { code: "A", text: "突然很想喝酒，哪怕这里只有速溶咖啡。", type: "李白", sub: "浪漫逃逸" },
+          { code: "B", text: "盯着地球看很久，开始想“人为什么一定要走这么远”。", type: "苏轼", sub: "宇宙感 / 哲思" },
+          { code: "C", text: "打开一段旧音乐，让熟悉的声音陪自己待一会儿。", type: "李清照", sub: "记忆 / 孤独" },
+          { code: "D", text: "继续把手里的灯修好。", type: "岑参", sub: "边疆式坚守" },
+          { code: "E", text: "提醒自己，既然来了，就必须把任务完成。", type: "文天祥", sub: "责任感" }
+        ]
+      },
+      {
+        id: 5,
+        text: "你已经很久没有真正见过“风”了。如果 AI 可以为你生成一个地球场景，你最想看到：",
+        options: [
+          { code: "A", text: "热闹的小酒馆，有人在大声说笑。", type: "李白", sub: "人间烟火" },
+          { code: "B", text: "江面上的月亮和很远的山。", type: "苏轼", sub: "宇宙与乡愁" },
+          { code: "C", text: "深夜的雨、窗边的灯，还有一点潮湿的风。", type: "李清照", sub: "情绪氛围" },
+          { code: "D", text: "荒凉但辽阔的边塞与大风。", type: "岑参", sub: "壮阔 / 孤独" },
+          { code: "E", text: "有人仍然在等你回家。", type: "文天祥", sub: "归属 / 信念" }
+        ]
+      }
+    ];
+
+    // 人物深度档案库
+    const PERSONA_MAP = {
+      "李白": {
+        name: "李白",
+        title: "浪漫主义 · 谪仙人",
+        typeDesc: "李白型浪漫主义",
+        brief: "你是那种就算人在月球，远离人间烟火，也不会让自己活得太无聊，太刻板的人。你不喜欢那种只有任务、没有情绪的生活。压力越大，你反而越会想办法让自己轻松一点。",
+        traits: "浪漫｜热爱自由｜幽默｜热烈｜情绪外放｜人间烟火",
+        stateQuote: "“都已经到月球了，总得活得自由得像个人吧。”",
+        quotes: ["仰天大笑出门去，我辈岂是蓬蒿人。", "天生我材必有用，千金散尽还复来。"],
+        analysis: "你可能会：用开玩笑缓解气氛；一边崩溃一边说“问题不大”；喜欢热闹、聊天、有人味的东西；不想变成只会工作的机器；哪怕在最难的时候，也想抬头看看月亮。你其实不是不害怕，只是比起被压垮，你更想“痛快地活着”。"
+      },
+      "苏轼": {
+        name: "苏轼",
+        title: "旷达哲思 · 东坡居士",
+        typeDesc: "苏轼型宇宙感人格",
+        brief: "你是那种越孤独，越会向内生长的人。别人可能会被月球的安静压垮，你却会在这种寂静里，慢慢开始“见自己，见天地”。你不一定总是快乐，但你很能与自己的情绪相处。",
+        traits: "哲思｜旷达｜宇宙感｜敏感｜观察力｜内核稳定",
+        stateQuote: "你看着地球成为舷窗外的一颗蓝色光点，孤独不再沉重，反而变得清醒。宇宙太辽阔，辽阔到足以把所有情绪慢慢稀释。",
+        quotes: ["寄蜉蝣于天地，渺沧海之一粟。", "人生如逆旅，我亦是行人。"],
+        analysis: "你习惯把情绪放进更大的东西里：时间、宇宙、文明、人的一生。越难受的时候，反而越清醒。会从极小的事物里感受到一种浩瀚感，不是悲观，只是更早意识到人在宇宙里终究都是短暂的行人。"
+      },
+      "李清照": {
+        name: "李清照",
+        title: "细腻词心 · 易安居士",
+        typeDesc: "李清照型共情人格",
+        brief: "你是那种即使离开地球很远，也总会被“人”的事情牵动的人。别人努力适应月球，你却总会记住一些细微的东西，一句没说完的话、某个人的语气。",
+        traits: "共情｜细腻｜温柔｜敏感｜念旧｜情绪丰富",
+        stateQuote: "我明明知道很多东西留不住，却还是会不停想起。这里太安静了，安静到每一点思念都被放大。",
+        quotes: ["物是人非事事休，欲语泪先流。", "寻寻觅觅，冷冷清清，凄凄惨惨戚戚。"],
+        analysis: "你很容易感同身受，不仅能感受到自己的孤独，也会感受到别人藏起来的疲惫。你不是脆弱，只是太在意失去、时间和离别。越孤独，越想念人与人之间的温度。"
+      },
+      "岑参": {
+        name: "岑参",
+        title: "边塞雄浑 · 孤胆诗人",
+        typeDesc: "岑参型意志人格",
+        brief: "你是那种即使全世界都沉寂，甚至只剩下自己，也会挺直腰杆继续前行的人。别人可能会被月球的寂静压垮，你却把它当作试炼：孤独、危险、未知，全都只是磨练意志的沙场。",
+        traits: "坚定｜果敢｜孤胆英雄｜意志力强｜纪律性｜悲壮感",
+        stateQuote: "风沙、寂静、未知，在我眼里都是试炼。孤独不是软弱，而是淬炼意志的熔炉。",
+        quotes: ["黄沙百战穿金甲，不破楼兰终不还。", "忽如一夜春风来，千树万树梨花开。"],
+        analysis: "你习惯用行动回应恐惧，不依赖任何慰藉，也不退缩。在舱外作业时独自面对极端环境，在一片荒凉中坚守职责。不是无情，只是把情绪收进心底，用行动去表达忠诚与勇气。"
+      },
+      "文天祥": {
+        name: "文天祥",
+        title: "正气坚守 · 民族脊梁",
+        typeDesc: "文天祥型信念人格",
+        brief: "你是那种即使明知道前路艰难，也依然会坚持自己信念的人。在极端环境里，你最在意的不是安全或舒适，而是原则、责任与使命感。",
+        traits: "信念感｜责任感｜坚守｜冷静｜理想主义｜精神力量",
+        stateQuote: "我清楚自己的渺小，也明白前路的危险。但总有人必须继续前行。不是因为看见了希望，而是因为有些事情，本来就值得被坚持。",
+        quotes: ["人生自古谁无死，留取丹心照汗青。", "臣心一片磁针石，不指南方不肯休。"],
+        analysis: "你可能会在所有人动摇时依然坚持自己的判断，宁愿承担代价也不轻易妥协。在孤独与压力中保持冷静，把“使命”和“信念”看得比一切都重。越接近绝境，越能集中精神完成责任。"
+      }
+    };
+
+    // 当前激活的题目
+    let currentQuestion = null;
+    let selectedType = null;
+
+    // 随机抽题 (排除刷新干扰)
+    function getRandomQuestion() {
+      const randomIndex = Math.floor(Math.random() * QUESTIONS.length);
+      return { ...QUESTIONS[randomIndex] };
+    }
+
+    // 渲染左侧题目
+    function renderQuiz() {
+      currentQuestion = getRandomQuestion();
+      const container = document.getElementById("quizContainer");
+      const optionsHtml = currentQuestion.options.map(opt => `
+        <div class="option-item" data-type="${opt.type}" data-code="${opt.code}">
+          <div class="option-prefix">${opt.code}</div>
+          <div>
+            <div class="option-text">${opt.text}</div>
+            <span class="option-sub">${opt.sub}</span>
+          </div>
+        </div>
+      `).join('');
+
+      container.innerHTML = `
+        <div class="question-text">🌙 命题 ${currentQuestion.id}/5 · ${currentQuestion.text}</div>
+        <div class="options-list" id="optionsList">
+          ${optionsHtml}
+        </div>
+        <button class="quiz-submit" id="submitAnswerBtn">✨ 提交选择 · 唤醒历史回声 ✨</button>
+        <button class="refresh-quiz" id="refreshQuizBtn">⟳ 重新抽题 (换一题)</button>
+      `;
+
+      // 绑定选项高亮交互
+      const optionDivs = document.querySelectorAll('.option-item');
+      optionDivs.forEach(opt => {
+        opt.addEventListener('click', () => {
+          optionDivs.forEach(o => o.style.background = 'rgba(255,255,255,0.03)');
+          opt.style.background = 'rgba(117, 215, 255, 0.2)';
+          opt.style.borderColor = 'rgba(117, 215, 255, 0.6)';
+          selectedType = opt.getAttribute('data-type');
+        });
+      });
+
+      // 提交事件
+      const submitBtn = document.getElementById('submitAnswerBtn');
+      const newSubmit = submitBtn.cloneNode(true);
+      submitBtn.parentNode.replaceChild(newSubmit, submitBtn);
+      newSubmit.addEventListener('click', () => {
+        if (!selectedType) {
+          document.getElementById("resultArea").innerHTML = `<div class="empty">⚠️ 请先选择一个选项再提交 ⚠️</div>`;
+          document.getElementById("systemState").textContent = "未选择";
+          return;
+        }
+        displayPersona(selectedType);
+        document.getElementById("systemState").textContent = `共鸣·${selectedType}`;
+      });
+
+      // 换题刷新
+      const refreshBtn = document.getElementById('refreshQuizBtn');
+      refreshBtn.addEventListener('click', () => {
+        selectedType = null;
+        renderQuiz();
+        document.getElementById("resultArea").innerHTML = `<div class="empty">🌙 题目已更换，请重新选择答案 🌙</div>`;
+        document.getElementById("systemState").textContent = "新命题待选";
+      });
+
+      selectedType = null;
+    }
+
+    // 显示人物深度解析
+    function displayPersona(type) {
+      const persona = PERSONA_MAP[type];
+      if (!persona) return;
+      const resultHtml = `
+        <div class="persona-card">
+          <div class="persona-name">${persona.name} · ${persona.title}</div>
+          <div class="persona-sub">${persona.typeDesc}</div>
+          <div class="persona-desc">${persona.brief}</div>
+          <div class="persona-desc"><strong>特征</strong><br>${persona.traits}</div>
+          <div class="quote-line">“${persona.stateQuote}”</div>
+          <div class="persona-desc">${persona.analysis}</div>
+          <div class="quote-line">${persona.quotes.map(q => `“${q}”`).join('  ·  ')}</div>
+        </div>
+        <div class="advice" style="padding:12px; background:rgba(158,230,176,0.07); border-radius:8px;">
+          <h3>🌕 月球人格与历史档案</h3>
+          <p>系统根据你的回答匹配出最接近的灵魂原型：${persona.name}。这不是简单的分类，而是你面对极端处境时的精神姿态——孤独中依然保有属于人类的光晕。</p>
+        </div>
+      `;
+      const resultArea = document.getElementById("resultArea");
+      resultArea.innerHTML = resultHtml;
+    }
+
+    // ---------- 保留原有 Canvas 开场动画 (精致版 无白色噪点风格) ----------
+    (function initIntro() {
       const canvas = document.getElementById('introCanvas');
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
       let width, height;
       let animFrame = null;
       let startTime = null;
       let isEnded = false;
 
-      const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
-      const gaussian = (x, sigma) => Math.exp(-(x * x) / (2 * sigma * sigma));
-      const smoothstep = (e0, e1, x) => {
-        const t = clamp((x - e0) / (e1 - e0), 0, 1);
-        return t * t * (3 - 2 * t);
-      };
-      const noise = (x, y, t) => Math.sin(x * 0.03 + t) * Math.cos(y * 0.03 + t * 0.7);
-
-      let trail = [];
-      let mouseX = 0, mouseY = 0;
-      let hasMouse = false;
-
-      function updateMouse(e) {
-        const rect = canvas.getBoundingClientRect();
-        const sx = (e.clientX - rect.left) / rect.width;
-        const sy = (e.clientY - rect.top) / rect.height;
-        mouseX = sx * width;
-        mouseY = sy * height;
-        hasMouse = true;
-        trail.push({ x: mouseX, y: mouseY, t: performance.now() });
-        if (trail.length > 25) trail.shift();  // 减少拖尾点数，更干净
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
       }
-
-      canvas.addEventListener('mousemove', updateMouse);
-      canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        if (e.touches.length) {
-          const rect = canvas.getBoundingClientRect();
-          const sx = (e.touches[0].clientX - rect.left) / rect.width;
-          const sy = (e.touches[0].clientY - rect.top) / rect.height;
-          mouseX = sx * width;
-          mouseY = sy * height;
-          hasMouse = true;
-          trail.push({ x: mouseX, y: mouseY, t: performance.now() });
-          if (trail.length > 25) trail.shift();
-        }
-      });
 
       function finishIntro() {
         if (isEnded) return;
@@ -576,20 +710,10 @@
       canvas.addEventListener('click', finishIntro);
       canvas.addEventListener('touchstart', finishIntro);
 
-      function resizeCanvas() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        if (!hasMouse) { mouseX = width * 0.5; mouseY = height * 0.5; }
-      }
-
       function drawFrame(now) {
         if (isEnded) return;
         if (!startTime) startTime = now;
-        const t = (now - startTime) * 0.0018;  // 更缓慢的流动
-        const globalIntensity = Math.sin(t * 0.35) * 0.15 + 0.9;
-
+        const t = (now - startTime) * 0.0018;
         ctx.clearRect(0, 0, width, height);
         const grad = ctx.createRadialGradient(width*0.5, height*0.5, 20, width*0.5, height*0.5, width*0.7);
         grad.addColorStop(0, '#040a14');
@@ -597,385 +721,39 @@
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, width, height);
 
-        // 增大步长，减少粒子密度 (从 step=4 改为 step=6，大幅减少白色噪点)
         const step = 7;
         for (let y = 0; y < height; y += step) {
           for (let x = 0; x < width; x += step) {
             let amp = 0;
             const cx = width * 0.5, cy = height * 0.5;
-            const dxc = x - cx, dyc = y - cy;
-            const distCenter = Math.hypot(dxc, dyc);
-            // 柔和圆环波纹
+            const distCenter = Math.hypot(x - cx, y - cy);
             const ringWave = Math.sin(distCenter * 0.02 - t * 2.5) * 0.4 + 0.6;
-            amp += gaussian(distCenter, 200) * ringWave * 0.45;
-
-            // 鼠标光晕强度降低
-            if (hasMouse) {
-              const distMouse = Math.hypot(x - mouseX, y - mouseY);
-              amp += gaussian(distMouse, 80) * 0.55;
-            }
-
-            // 螺旋光晕减弱
-            const angle = Math.atan2(dyc, dxc);
-            const radiusMod = distCenter + Math.sin(angle * 4 + t * 3) * 12;
-            const spiral = Math.sin(radiusMod * 0.04 - t * 3.2) * 0.4 + 0.5;
-            amp += spiral * gaussian(distCenter, 250) * 0.3;
-
-            // 三角网格轻微过渡
-            const tx = x * 0.02, ty = y * 0.02;
-            const tri1 = Math.sin(tx) * Math.cos(ty);
-            const tri2 = Math.sin(tx * 1.5 + t) * Math.cos(ty * 1.1 + t * 0.7);
-            let tri = (tri1 + tri2) * 0.5 + 0.5;
-            const circleGrad = 1 - Math.min(1, distCenter / (Math.min(width, height) * 0.55));
-            const k = smoothstep(0.7, 1, Math.min(1, distCenter / 360));
-            let d = tri * (1 - k) + circleGrad * k;
-            amp += gaussian(Math.abs(d), 1.4) * 0.18;
-
-            // 拖尾光晕 (减弱)
-            const nowT = performance.now();
-            for (let i = 0; i < trail.length; i++) {
-              const p = trail[i];
-              const age = (nowT - p.t) / 1100;
-              if (age > 1) continue;
-              const td = Math.hypot(x - p.x, y - p.y);
-              const fade = 1 - age;
-              const weight = i / (trail.length + 1);
-              const shimmer = 0.75 + noise(x * 1.8, y * 1.8, t * 1.5) * 0.25;
-              amp += gaussian(td, 42) * fade * fade * weight * shimmer * 0.35;
-            }
-
-            amp = clamp(amp * globalIntensity, 0, 1);
-            if (amp < 0.04) continue;  // 提高阈值，过滤微弱噪点
-
-            // 半径略微减小，颜色更柔和偏蓝，减少白色刺眼感
-            const radius = clamp(amp * 3.5, 0.8, 3.8);
-            const glow = amp;
-            const blueVal = 180 + glow * 65;
-            const whiteVal = 155 + glow * 75;
+            amp += Math.exp(-(distCenter * distCenter) / (200*200)) * ringWave * 0.45;
+            const angle = Math.atan2(y - cy, x - cx);
+            const spiral = Math.sin(distCenter * 0.04 - t * 3.2) * 0.4 + 0.5;
+            amp += spiral * Math.exp(-(distCenter * distCenter) / (250*250)) * 0.3;
+            amp = Math.min(1, Math.max(0, amp));
+            if (amp < 0.04) continue;
+            const radius = Math.min(3.8, amp * 3.2);
+            const blueVal = 180 + amp * 65;
+            const whiteVal = 155 + amp * 75;
             ctx.fillStyle = `rgba(${whiteVal}, ${whiteVal}, ${blueVal}, 0.7)`;
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.fill();
           }
         }
-
-        // 少量大光晕 (保持呼吸感但减少额外颗粒)
-        for (let i = 0; i < 12; i++) {
-          const angleOffset = t * 0.7 + i;
-          const radX = width * 0.5 + Math.sin(angleOffset) * 130;
-          const radY = height * 0.5 + Math.cos(angleOffset * 0.7) * 80;
-          const bigGlow = 60 + Math.sin(t * 1.5 + i) * 15;
-          const gradGlow = ctx.createRadialGradient(radX, radY, 8, radX, radY, bigGlow);
-          gradGlow.addColorStop(0, `rgba(140, 180, 240, 0.14)`);
-          gradGlow.addColorStop(1, `rgba(60, 100, 160, 0)`);
-          ctx.fillStyle = gradGlow;
-          ctx.fillRect(0, 0, width, height);
-        }
-
-        if (!isEnded) animFrame = requestAnimationFrame(drawFrame);
+        animFrame = requestAnimationFrame(drawFrame);
       }
 
       window.addEventListener('resize', () => { resizeCanvas(); });
       resizeCanvas();
       animFrame = requestAnimationFrame(drawFrame);
-      canvas.addEventListener('touchstart', (e) => { e.preventDefault(); });
-      canvas.addEventListener('touchmove', (e) => { e.preventDefault(); });
     })();
 
-    // ========== 2. Human Archive 核心逻辑 ==========
-    
-
-    const input = document.getElementById("distressInput");
-    const analyzeBtn = document.getElementById("analyzeBtn");
-    const voiceBtn = document.getElementById("voiceBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const resultArea = document.getElementById("resultArea");
-    const systemState = document.getElementById("systemState");
-
-    const metricEls = {
-      echo: [document.getElementById("echoFill"), document.getElementById("echoText")],
-      resonance: [document.getElementById("resonanceFill"), document.getElementById("resonanceText")],
-      archive: [document.getElementById("archiveFill"), document.getElementById("archiveText")],
-      clarity: [document.getElementById("clarityFill"), document.getElementById("clarityText")]
-    };
-
-    const figures = window.HUMAN_ARCHIVE || [];
-
-    const lexicon = {
-      joy: ["开心", "快乐", "轻松", "期待", "希望", "好奇", "自由", "美", "喜欢", "安宁"],
-      sadness: ["难过", "悲伤", "失落", "孤独", "没人", "没有人", "听见", "断开", "失败", "哭"],
-      anxiety: ["害怕", "焦虑", "心跳", "呼吸", "出事", "警觉", "危险", "故障", "担心", "不确定"],
-      longing: ["地球", "故乡", "想家", "家", "延迟", "蓝点", "回去", "亲人", "远方", "月亮"],
-      anger: ["愤怒", "不公平", "被否定", "委屈", "压抑", "受伤", "无法忍受"],
-      numbness: ["意义", "价值", "零件", "替换", "没用", "疲劳", "重复", "麻木", "无聊", "空", "睡"]
-    };
-
-    function scoreText(text) {
-      const cleanText = text.trim();
-      const base = {
-        joy: 1,
-        sadness: 1,
-        anxiety: 1,
-        longing: 1,
-        anger: 1,
-        numbness: 1
-      };
-
-      Object.entries(lexicon).forEach(([key, words]) => {
-        words.forEach((word) => {
-          if (cleanText.includes(word)) base[key] += 1;
-        });
-      });
-
-      if (cleanText.length > 70) base.numbness += 1;
-      if (cleanText.includes("不想") || cleanText.includes("越来越")) base.sadness += 1;
-      if (cleanText.includes("修不好") || cleanText.includes("失败")) {
-        base.anxiety += 1;
-        base.numbness += 1;
-      }
-      return base;
-    }
-
-    function clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
-    }
-
-    function buildEchoMetrics(vector, text) {
-      const total = Object.values(vector).reduce((sum, value) => sum + value, 0);
-      const strongest = Math.max(...Object.values(vector));
-      return {
-        echo: clamp(35 + strongest * 9 + Math.min(text.length, 120) / 4, 22, 96),
-        resonance: clamp(30 + (vector.sadness + vector.longing + vector.numbness) * 7, 20, 95),
-        archive: clamp(38 + total * 5, 28, 96),
-        clarity: clamp(42 + Math.min(text.length, 140) / 3, 35, 94)
-      };
-    }
-
-    function updateMetrics(metrics) {
-      Object.entries(metrics).forEach(([key, value]) => {
-        const [fill, text] = metricEls[key];
-        fill.style.width = `${value}%`;
-        fill.style.background = value > 72
-          ? "linear-gradient(90deg, var(--amber), var(--rose))"
-          : "linear-gradient(90deg, var(--cyan), var(--green))";
-        text.textContent = `${value}%`;
-      });
-    }
-
-    function emotionPercentages(vector) {
-      const total = Object.values(vector).reduce((sum, value) => sum + value, 0);
-      const labels = {
-        joy: "开心",
-        sadness: "难过",
-        anxiety: "焦虑",
-        longing: "思念",
-        anger: "愤怒",
-        numbness: "麻木"
-      };
-      return Object.entries(vector)
-        .map(([key, value]) => ({ key, label: labels[key], value: Math.round((value / total) * 100) }))
-        .sort((a, b) => b.value - a.value);
-    }
-
-    function matchFigures(vector) {
-      return figures
-        .map((figure) => {
-          const score = Object.entries(figure.weights).reduce((sum, [key, weight]) => sum + vector[key] * weight, 0);
-          return { ...figure, score };
-        })
-        .sort((a, b) => b.score - a.score);
-    }
-
-    function dominantTags(vector) {
-      const labels = {
-        joy: "积极情绪仍在",
-        sadness: "难过感较强",
-        anxiety: "焦虑警觉上升",
-        longing: "思念与远方感",
-        anger: "压抑或愤怒",
-        numbness: "麻木与意义感波动"
-      };
-      return Object.entries(vector)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([key]) => labels[key]);
-    }
-
-    function renderResult(text, vector, matches, metrics) {
-      const tags = dominantTags(vector);
-      const emotions = emotionPercentages(vector);
-      const top = matches[0];
-      const confidence = Math.min(96, 58 + top.score * 2);
-      resultArea.innerHTML = `
-        <div class="result-head">
-          <h2>ECHO 分析完成</h2>
-          <span class="state">匹配完成</span>
-        </div>
-        <div class="diagnosis">
-          <div class="diagnosis-box">
-            <h3>这段话的情绪理解</h3>
-            <div class="tags">${tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
-            <p>系统先理解用户正在表达的情绪结构，再把它转化为可检索的历史处境。这里的百分比是原型演示，不是医学诊断。</p>
-          </div>
-          <div class="diagnosis-box">
-            <h3>ECHO 值</h3>
-            <p>情绪回声强度 ${metrics.echo}%、处境相似度 ${metrics.resonance}%、文化检索置信 ${metrics.archive}%、表达清晰度 ${metrics.clarity}%。ECHO 值表示这段话能在历史经验库中激起多强的共鸣。</p>
-          </div>
-        </div>
-        <div class="diagnosis-box">
-          <h3>情绪百分比</h3>
-          ${emotions.map(item => `
-            <div class="metric" style="margin-top:10px;">
-              <label><span>${item.label}</span><b>${item.value}%</b></label>
-              <div class="bar"><div class="fill" style="width:${item.value}%;"></div></div>
-            </div>
-          `).join("")}
-        </div>
-        <div class="figure-list">
-            <article class="figure-card">
-              <div class="rank">1</div>
-              <div>
-                <h3>${top.name}｜${top.title}</h3>
-                <div class="tags">${top.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
-                <p><b>相似经历：</b>${top.experience}</p>
-                <div class="quote"><b>相关作品：</b>${top.works.join(" / ")}</div>
-                <p>${top.reason}</p>
-              </div>
-              <div class="score">${confidence}%</div>
-            </article>
-        </div>
-        <div class="advice">
-          <h3>全库检索说明</h3>
-          <p>系统已从 ${figures.length} 个历史人物与书本角色候选中筛选出当前最匹配对象：${top.name}。它不是三选一，也不是判断“用户像谁”，而是判断这段话里的情绪、处境和表达方式，最能与哪段生命经验及作品主题产生回声。</p>
-        </div>
-      `;
-    }
-
-    function analyze() {
-      const text = input.value.trim();
-      if (!text) {
-        input.focus();
-        systemState.textContent = "等待输入";
-        return;
-      }
-
-      systemState.textContent = "扫描中";
-      resultArea.innerHTML = `<div class="empty">正在解析语义线索、生成 ECHO 值、计算情绪百分比、检索历史人物与相关作品……</div>`;
-
-      const vector = scoreText(text);
-      const metrics = buildEchoMetrics(vector, text);
-      updateMetrics(metrics);
-
-      setTimeout(() => {
-        const matches = matchFigures(vector);
-        systemState.textContent = "ECHO 匹配";
-        renderResult(text, vector, matches, metrics);
-      }, 560);
-    }
-
-    document.querySelectorAll("[data-sample]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        input.value = btn.dataset.sample;
-        analyze();
-      });
-    });
-
-    analyzeBtn.addEventListener("click", analyze);
-
-    clearBtn.addEventListener("click", () => {
-      input.value = "";
-      systemState.textContent = "待机";
-      updateMetrics({ echo: 34, resonance: 28, archive: 31, clarity: 37 });
-      resultArea.innerHTML = `<div class="empty">等待输入。系统将先生成 ECHO 值，再展示情绪理解百分比，并调取与这段话产生共鸣的历史人物与作品。</div>`;
-    });
-
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let recognition = null;
-    let listening = false;
-    let finalTranscript = "";
-
-    function setVoiceIdle(label = "开始语音输入") {
-      listening = false;
-      voiceBtn.classList.remove("active");
-      voiceBtn.textContent = label;
-    }
-
-    function showVoiceMessage(message) {
-      systemState.textContent = message;
-      resultArea.innerHTML = `<div class="empty">${message}。你仍然可以直接使用文字输入继续体验。</div>`;
-    }
-
-    if (SpeechRecognition) {
-      recognition = new SpeechRecognition();
-      recognition.lang = "zh-CN";
-      recognition.interimResults = true;
-      recognition.continuous = false;
-
-      recognition.onstart = () => {
-        listening = true;
-        voiceBtn.classList.add("active");
-        voiceBtn.textContent = "正在聆听...";
-        systemState.textContent = "语音输入中";
-      };
-
-      recognition.onresult = (event) => {
-        let interimTranscript = "";
-        for (let i = event.resultIndex; i < event.results.length; i += 1) {
-          const transcript = event.results[i][0].transcript;
-          if (event.results[i].isFinal) {
-            finalTranscript += transcript;
-          } else {
-            interimTranscript += transcript;
-          }
-        }
-        input.value = `${finalTranscript}${interimTranscript}`;
-      };
-
-      recognition.onend = () => {
-        setVoiceIdle();
-      };
-
-      recognition.onerror = (event) => {
-        const messages = {
-          "not-allowed": "麦克风权限被拒绝",
-          "service-not-allowed": "浏览器禁止调用语音识别服务",
-          "no-speech": "没有检测到清晰语音",
-          "audio-capture": "没有检测到可用麦克风",
-          "network": "语音识别服务网络连接失败",
-          "aborted": "语音识别已中断"
-        };
-        const message = messages[event.error] || `语音识别失败：${event.error}`;
-        showVoiceMessage(message);
-        setVoiceIdle("重新语音输入");
-      };
-    } else {
-      voiceBtn.textContent = "浏览器不支持语音";
-      voiceBtn.disabled = true;
-      voiceBtn.title = "请使用 Chrome 或 Edge 打开网页，Safari、Firefox、微信内置浏览器通常不支持网页语音识别。";
-    }
-
-    voiceBtn.addEventListener("click", () => {
-      if (!recognition) return;
-      if (listening) {
-        recognition.stop();
-        return;
-      }
-      try {
-        finalTranscript = input.value ? `${input.value.trim()} ` : "";
-        recognition.start();
-      } catch (error) {
-        showVoiceMessage("语音识别启动失败，请刷新页面或改用文字输入");
-        setVoiceIdle("重新语音输入");
-      }
-    });
-
-    input.addEventListener("keydown", (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-        analyze();
-      }
-    });
-
-    updateMetrics({ echo: 34, resonance: 28, archive: 31, clarity: 37 });
+    // 初始化渲染题目
+    renderQuiz();
+    document.getElementById("systemState").textContent = "随机题目已备";
   </script>
 </body>
 </html>
