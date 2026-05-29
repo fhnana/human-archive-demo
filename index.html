@@ -672,10 +672,18 @@
         <div class="advice" style="padding:12px; background:rgba(158,230,176,0.07); border-radius:8px;">
           <h3>🌕 月球人格与历史档案</h3>
           <p>系统根据你的回答匹配出最接近的灵魂原型：${persona.name}。这不是简单的分类，而是你面对极端处境时的精神姿态——孤独中依然保有属于人类的光晕。</p>
+          <button class="quiz-submit" id="enterRevealBtn" style="margin-top:14px;">进入人物交互界面</button>
         </div>
       `;
       const resultArea = document.getElementById("resultArea");
       resultArea.innerHTML = resultHtml;
+      const enterRevealBtn = document.getElementById("enterRevealBtn");
+      if (enterRevealBtn) {
+        enterRevealBtn.addEventListener("click", () => {
+          localStorage.setItem("humanArchiveMatch", persona.name);
+          window.location.href = `earth_moon_echo_lunar_dust_hand_reveal.html?person=${encodeURIComponent(persona.name)}`;
+        });
+      }
     }
 
     // ---------- 保留原有 Canvas 开场动画 (精致版 无白色噪点风格) ----------
